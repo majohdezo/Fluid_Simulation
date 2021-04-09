@@ -1,0 +1,7 @@
+200
+4
+horizontalCurly 5 25 700 3 3 7 1
+horizontalCurly 50 25 500 -5 -5 5 0.5
+verticalCurly 25 50 700 4 4 5 0.3
+verticalCurly 25 5 700 -7 -7 7 0.7
+13
