@@ -121,4 +121,4 @@ This is how each one of them looks:
 
 
 ## References:
-This code was based on this [file] (https://github.com/gcastillo56/com139-class/blob/master/Fluid_Sim/fluid.py) 
+This code was based on this [file](https://github.com/gcastillo56/com139-class/blob/master/Fluid_Sim/fluid.py) 
