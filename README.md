@@ -57,7 +57,7 @@ After adding the emitters you will introduce the number of objects you want in t
 - Y position (int)
 - Size (int)
 
-Once you've finished adding the configuration of the emitters and the objects, you will finally add the `Color Scheme`. Each color is identified with a number. This must be a value between 1 and 15. Those are the following colors you can select.
+Once you've finished adding the configuration of the emitters and the objects, you will finally add the `Color Scheme`. Each color is identified with a number. This must be a value between 1 and 15. These are the colors available to choose.
 
 ![image](reamde_rsc/color.png)
 
