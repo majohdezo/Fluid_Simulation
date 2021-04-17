@@ -50,6 +50,8 @@ At the first line, you will write the `Number of frames` you want in the simulat
 - Emitter size (int)
 - Factor movement (float)
 
+The factor movement changes the period of the movement. The bigger your factor is, the faster the fluid will move.
+
 After adding the emitters you will introduce the number of objects you want in the scene. As you did with the emitters you will first need to write on a single line the `Number of objects` you want on the scene.Afte this line,  you will introduce the object's settings. Each object settings should be on a different line. Values required for each one: 
 - X position (int)
 - Y position (int)
@@ -98,9 +100,12 @@ To change the behavior you have to add one of the following key-words:
 - constant
 ```
 
+Depending on the X and Y velocities that you add, each emitter will move faster or slower. The velocities also affects the direction of the fluid.
+
 This is how each one of them looks:
 
 `Horizontal Curly`
+
 
 ![image](reamde_rsc/horizontal.gif)
 
