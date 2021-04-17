@@ -18,9 +18,9 @@ behaviors=["verticalCurly","horizontalCurly", "swirl", "constant"]
 colorVal=3
 FRAMES=200
 EMITTERS=1
-
-
-
+objectsNumber = 0
+objPos = []
+objSize = []
 
 class Fluid:
 
@@ -67,19 +67,26 @@ class Fluid:
             # Calculates the interactions with the 4 closest neighbors
             x[1:-1, 1:-1] = (x0[1:-1, 1:-1] + a * (x[2:, 1:-1] + x[:-2, 1:-1] + x[1:-1, 2:] + x[1:-1, :-2])) * c_recip
 
-            self.set_boundaries(x)
+            self.set_boundaries(x, False)
 
-    def set_boundaries(self, table):
+    def set_boundaries(self, table, isObject):
         """
         Boundaries handling
         :return:
         """
+        
 
         if len(table.shape) > 2:  # 3d velocity vector array
             # Simulating the bouncing effect of the velocity array
             # vertical, invert if y vector
             table[:, 0, 1] = - table[:, 0, 1]
             table[:, self.size - 1, 1] = - table[:, self.size - 1, 1]
+            if(isObject):
+                for a in range (0,objectsNumber):
+                    x= int(objPos[a][0])
+                    y=int(objPos[a][1])
+                    size=int(objSize[a])
+                    table[y:y+size, x:x+size]=0
 
             # horizontal, invert if x vector
             table[0, :, 0] = - table[0, :, 0]
@@ -91,10 +98,7 @@ class Fluid:
         table[self.size - 1, self.size - 1] = 0.5 * table[self.size - 2, self.size - 1] + \
                                               table[self.size - 1, self.size - 2]
 
-        #Aqui se agregan los objetos
-        #d=5
-        #table[5, 5] = - 2 * table[5, 5]
-        #self.density[5, 5] += d * abs(table[5, 5])
+        
 
     def diffuse(self, x, x0, diff):
         if diff != 0:
@@ -111,14 +115,14 @@ class Fluid:
                 velo_y[1:-1, 2:] - velo_y[1:-1, :-2]) / self.size
         p[:, :] = 0
 
-        self.set_boundaries(div)
-        self.set_boundaries(p)
+        self.set_boundaries(div, False)
+        self.set_boundaries(p,False)
         self.lin_solve(p, div, 1, 6)
 
         velo_x[1:-1, 1:-1] -= 0.5 * (p[2:, 1:-1] - p[:-2, 1:-1]) * self.size
         velo_y[1:-1, 1:-1] -= 0.5 * (p[1:-1, 2:] - p[1:-1, :-2]) * self.size
 
-        self.set_boundaries(self.velo)
+        self.set_boundaries(self.velo,False)
 
     def advect(self, d, d0, velocity):
         dtx = self.dt * (self.size - 2)
@@ -162,7 +166,7 @@ class Fluid:
                     # tmp = str("inline: i0: %d, j0: %d, i1: %d, j1: %d" % (i0, j0, i1, j1))
                     # print("tmp: %s\ntmp1: %s" %(tmp, tmp1))
                     raise IndexError
-        self.set_boundaries(d)
+        self.set_boundaries(d, False)
 
     def turn(self):
         self.cntx += 1
@@ -220,14 +224,19 @@ if __name__ == "__main__":
             print("Please, enter an integer value for the number of emitters")
             sys.exit()
         try:
+            objectsNumber=int(settings[2+EMITTERS])
+        except:
+            print("Please, enter an integer value for the number of emitters")
+            sys.exit()
+        try:
             colorVal=int((settings[len(settings)-1]))            
         except:
             print("Please, enter an integer value for the Color Scheme")
             sys.exit()
         
         if(colorVal>15):
-                print("Please, enter a value from 1 to 15 for the Color Scheme")
-                sys.exit()        
+            print("Please, enter a value from 1 to 15 for the Color Scheme")
+            sys.exit()        
         
         
             
@@ -254,6 +263,51 @@ if __name__ == "__main__":
             if(cont!=EMITTERS):
                 print("Please, enter the correct settings for each emitter, you added "+ str(EMITTERS) + " emitters, but you entered the settings for "+ str(cont) + " emitters")
                 sys.exit() 
+
+            cont=0     
+            objects_settings=[]
+            objValueError= False
+            
+            for x in range(0, objectsNumber):
+                index=x+3+EMITTERS
+                cont+=1                
+                try:                
+                    objects_settings=settings[index].split()                
+                    objPos.append([objects_settings[0],objects_settings[1]])
+                    objSize.append(objects_settings[2])
+                    try:
+                        X= int(objects_settings[0])   
+                        Y= int(objects_settings[1])
+                        SIZE= int(objects_settings[2])
+                        
+                    except:
+                        print("Please, enter only int values to set the objects")
+                        objValueError= True
+                        sys.exit()
+
+                except:
+                    if(not objValueError):
+                        cont-=1
+                        print("Please, enter the correct settings for each object, you added "+ str(objectsNumber) + " objects")
+                        print("Values  for each emitter: X position, Y position, object size")
+                    sys.exit()                
+                
+                if(X < 0 or X >= inst.size):
+                    print("X coordinate out of grid range for Object "+ str(x+1))
+                    sys.exit()
+                if(Y < 0 or Y >= inst.size):
+                    print("Y coordinate out of grid range for Object "+str(x+1))
+                    sys.exit()
+
+                if((X + SIZE) >= inst.size):
+                    print("Object out of grid range on the X axis, please decrease the size of Object "+ str(x+1))
+                    sys.exit()
+                        
+                if((Y + SIZE) >= inst.size):
+                    print("Object out of grid range on the Y axis, please decrease the size of Object "+ str(x+1))
+                    sys.exit()
+
+            inst.set_boundaries(inst.velo, True)
             
             for x in range(0,EMITTERS):
                 index=x+2
@@ -331,7 +385,7 @@ if __name__ == "__main__":
         anim = animation.FuncAnimation(fig, update_im, fargs=(ax, ), interval=0, frames=FRAMES)
         print("Simulating...")
 
-        anim.save('output.gif',fps=30, bitrate=1800)
+        anim.save('movie.mp4',fps=30, bitrate=1800)
 
         
 

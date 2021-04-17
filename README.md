@@ -2,7 +2,7 @@
 
 This code is based on Jos Stam’s paper “Real-Time Fluid Dynamics for Games”. This publication presents an easy and quick implementation of a fluid dynamics solver for game engines. The algorithms are based on the Navier-Stokes equations, which are the physical equations of fluid flow.
 
-![image](reamde_rsc/output.gif)
+![image](reamde_rsc/Obj.gif)
 
 
 ## Instructions:
@@ -50,7 +50,12 @@ At the first line, you will write the `Number of frames` you want in the simulat
 - Emitter size (int)
 - Factor movement (float)
 
-Once you've finished adding the configuration of the emitter, you will finally add the `Color Scheme`. Each color is identified with a number. This must be a value between 1 and 15. Those are the following colors you can select.
+After adding the emitters you will introduce the number of objects you want in the scene. As you did with the emitters you will first need to write on a single line the `Number of objects` you want on the scene.Afte this line,  you will introduce the object's settings. Each object settings should be on a different line. Values required for each one: 
+- X position (int)
+- Y position (int)
+- Size (int)
+
+Once you've finished adding the configuration of the emitters and the objects, you will finally add the `Color Scheme`. Each color is identified with a number. This must be a value between 1 and 15. Those are the following colors you can select.
 
 ![image](reamde_rsc/color.png)
 
@@ -65,10 +70,16 @@ The correct format to give its configuration is the following one:
 .
 .
 <behavior_name> <X position> <Y position> <density> <X velocity> <Y velocity> <emitter size> <factor movement>
+<n-objects>
+<X object position> <Y object position> <object size>
+.
+.
+.
+<X object position> <Y object position> <object size>
 <color>
 ```
 
-Remember that the number of emitters added on the second line should match with the number of lines of each emitter configuration. For example, if you added 3 emitters, there must be 3 lines below the second line that corresponds to each emitter. 
+Remember that the number of emitters added on the second line should match with the number of lines of each emitter configuration. For example, if you added 3 emitters, there must be 3 lines below the second line that corresponds to each emitter. This is the same logic for the objects, the number of lines below the number of objects must match with the objects added.
 
 [Example](settings.txt)
 
